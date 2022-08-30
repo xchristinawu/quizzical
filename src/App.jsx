@@ -14,8 +14,7 @@ export default function App() {
     const [correctAnswersCount, setCorrectAnswersCount] = React.useState(0)
     const [category, setCategory] = React.useState(9)
     const [difficulty, setDifficulty] = React.useState("easy")
-
-    console.log(quizArray)
+    const [isDisabled, setIsDisabled] = React.useState(false)
 
     function handleCategoryChange(event) {
         setCategory(event)
@@ -24,9 +23,6 @@ export default function App() {
     function handleDifficultyChange(event) {
         setDifficulty(event)
     }
-
-    console.log(`Category: ${category}`)
-    console.log(`Difficulty: ${difficulty}`)
 
     function toggleStart() {
         setStartQuiz(true)
@@ -84,7 +80,6 @@ export default function App() {
     // handle answer selection
     // changes obj.selected to selected answer
     const handleSelectedAnswer = (id, selectedAnswer) => {
-        console.log(selectedAnswer)
         setQuizArray(prevQuizArray => (
             prevQuizArray.map(question => (
                 question.id === id ?
@@ -103,6 +98,8 @@ export default function App() {
                 correctAnswer={quiz.correctAnswer}
                 selected={quiz.selected}
                 handleSelectedAnswer={handleSelectedAnswer}
+                isDisabled={isDisabled}
+                isGameOver={isGameOver}
             />   
     ))
     
@@ -126,19 +123,18 @@ export default function App() {
             })
             setCorrectAnswersCount(count)
             setIsGameOver(true)
+            setIsDisabled(true)
         }
-
-        console.log(selectedValueArray)
-        console.log(allAnswersSelected)
     }
-    console.log(`Correct Answers: ${correctAnswersCount}`)
 
     function playAgain() {
         setIsGameOver(false)
+        setIsDisabled(false)
         setCorrectAnswersCount(0)
         setStartQuiz(false)
+        getTriviaData()
     }
-
+    
     return (
         <>
             <img
@@ -154,17 +150,36 @@ export default function App() {
                 difficulty={difficulty}
                 handleDifficultyChange={handleDifficultyChange}
             />}
-            <section>
+            <section className="quiz-container" style={{display: startQuiz ? "flex" : "none"}}>
                 {startQuiz && <div>{quizElements}</div>}
-                {startQuiz && !isGameOver && <button onClick={() => checkAnswers(quizArray)}>Check answers</button>}
-                {isGameOver && <div><p>You scored {correctAnswersCount}/{quizArray.length} correct answers</p><button onClick={() => playAgain()}>Play again</button></div>}
+                {startQuiz && 
+                !isGameOver && 
+                <button
+                    className="check-answers"
+                    onClick={() => checkAnswers(quizArray)}
+                >
+                    Check answers
+                </button>}
+                {isGameOver && 
+                <div>
+                    <p className="score-description">
+                        You scored {correctAnswersCount}/{quizArray.length} correct answers
+                        <button
+                            className="play-again"
+                            onClick={() => playAgain()}
+                        >
+                            Play again
+                        </button>
+                    </p>
+                </div>}
             </section>
+            
             <img
                 className="bottom-blob"
                 src={BottomBlob}
                 alt="Top Background Blob"
             />
-            <footer>Developed by Christina Wu</footer>
+            
         </>
     )
 }

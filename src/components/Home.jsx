@@ -35,7 +35,7 @@ export default function Home(props) {
     ]
 
     return (
-        <div className="container">
+        <div className="home-container">
         <section className="home">
             <h1 className="title">Quizzical</h1>
             <p className="description">Trivia Game</p>

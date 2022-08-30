@@ -1,3 +1,5 @@
+import {nanoid} from "nanoid"
+
 export default function Dropdown(props) {
     return (
         <label className="dropdown-label">
@@ -8,7 +10,7 @@ export default function Dropdown(props) {
                 onChange={event => props.onChange(event.target.value)}
             >
                 {props.options.map(option => (
-                    <option value={option.value}>{option.label}</option>
+                    <option key={nanoid()} value={option.value}>{option.label}</option>
                 ))}
             </select>
         </label>
